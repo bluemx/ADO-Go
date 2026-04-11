@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ADO Go | El Viajero Editorial</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#5F2167",
+                        "secondary": "#DA291C",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#df2d1f",
+                        "on-primary-container": "#d68dda",
+                        "primary-fixed-dim": "#f9acfc",
+                        "on-tertiary-fixed": "#29132d",
+                        "on-secondary-fixed": "#410000",
+                        "outline-variant": "#d2c2ce",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "surface-variant": "#e5e1e5",
+                        "on-tertiary-container": "#bd9cbd",
+                        "surface-dim": "#ddd9dc",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#86458c",
+                        "on-tertiary-fixed-variant": "#583e5a",
+                        "background": "#fdf8fb",
+                        "inverse-surface": "#313033",
+                        "surface-container-low": "#f7f2f6",
+                        "surface-container-high": "#ebe7ea",
+                        "surface-container-highest": "#e5e1e5",
+                        "on-secondary-container": "#fffbff",
+                        "tertiary-fixed": "#fbd7fb",
+                        "on-surface-variant": "#4f434d",
+                        "on-primary-fixed": "#36003e",
+                        "tertiary-fixed-dim": "#debcde",
+                        "secondary-fixed": "#ffdad4",
+                        "primary-fixed": "#ffd6fd",
+                        "surface-container": "#f1edf0",
+                        "surface": "#fdf8fb",
+                        "error": "#ba1a1a",
+                        "primary-container": "#5F2167",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f4eff3",
+                        "outline": "#80737e",
+                        "on-secondary-fixed-variant": "#930001",
+                        "inverse-primary": "#f9acfc",
+                        "tertiary": "#351d38",
+                        "surface-bright": "#fdf8fb",
+                        "on-primary-fixed-variant": "#6b2d73",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#4c334f",
+                        "on-surface": "#1c1b1e",
+                        "on-background": "#1c1b1e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .editorial-gradient {
+            background: linear-gradient(135deg, #5F2167 0%, #86458c 100%);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(95, 33, 103, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body text-on-surface">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed w-full top-0 z-50 bg-white/80 dark:bg-purple-950/80 backdrop-blur-xl shadow-xl shadow-purple-900/5 flex justify-between items-center px-8 py-4 max-w-full">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-black text-primary dark:text-purple-100 tracking-tighter font-headline">ADO
+                Go</span>
+            <div class="hidden md:flex gap-6">
+                <a class="font-manrope text-sm tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
+                    href="#">Inicio</a>
+                <a class="font-manrope text-sm tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
+                    href="#">Cómo funciona</a>
+                <a class="font-manrope text-sm tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
+                    href="#">Beneficios</a>
+                <a class="font-manrope text-sm tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
+                    href="#">Aliados</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <a class="hidden md:block bg-primary text-white px-6 py-2.5 rounded-lg font-manrope text-sm font-bold uppercase tracking-wider hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+                href="#">Únete ahora</a>
+            <div class="flex items-center gap-4">
+                <div class="hidden lg:flex flex-col items-end mr-4">
+                    <span class="font-headline text-xs font-bold text-primary uppercase tracking-widest">Nivel:
+                        Clásico</span>
+                    <span class="text-[10px] text-outline">Puntos: 1,250</span>
+                </div>
+                <div class="flex gap-2">
+                    <span
+                        class="material-symbols-outlined text-primary cursor-pointer hover:scale-95 active:scale-90 transition-transform">notifications</span>
+                    <span
+                        class="material-symbols-outlined text-primary cursor-pointer hover:scale-95 active:scale-90 transition-transform">stars</span>
+                </div>
+                <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container">
+                    <img alt="Avatar de usuario"
+                        data-alt="professional headshot of a smiling person with soft studio lighting and a clean neutral background"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2PBcjHZy4dhNbhvCdVNmyPUYRrQ-2WuhJ_4B5FXe1M1DjPADltY8vie7w9NT05T9VvPptOv6VGx6j6YN9U_HJldMrEbWZLoVvG-PNFK5xGGfgD68-Brf7F46Mgu1nG45exzhSmw3R5J-UMfuZNJF6YL24-h_gt6lWsJ6ltS4sLTVVb7P65TH1ZSFnRn00YCwgCDfNCtXu1Qul41lC4lRo-dy-rDUb4e9hNYkFuQfnMlQfGd5Grgr15A47RElp3Y2_nx1NKLFYpYg" />
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="relative min-h-[800px] flex items-center overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img class="w-full h-full object-cover"
+                    data-alt="luxury modern bus traveling on a scenic highway at sunrise"
+                    src="https://lh3.googleusercontent.com/aida/ADBb0ug1wGjfKKT-Al1VKaLp0woYpLlt9Qc4ZXVkUv06JQvahLSkf-vDkVUC_pF4Zvbu76Ngasg1CdRKPVEfWbby-li3zuIohpSdvW-tbnhcBEv26eYh32CZ3byL4pmpyWcagS3WOGjCc6WdJ1_yTbi7C3TV_ZMgQpPvNGd7ZGPFZcp7HW5OA7-fuT3fD1tX6JYz1hOi3H9-aMr_btsQx77wn-xI1C326mK26JTVI_eJg3k7tnsAYDs3xoXQe1BkiR9clDAV7ao3bG8e0Q" />
+                <div class="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/60 to-transparent"></div>
+            </div>
+            <div class="container mx-auto px-8 relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8">
+                <div class="md:col-span-7 lg:col-span-6 flex flex-col justify-center">
+                    <span class="font-headline text-sm font-extrabold text-secondary uppercase tracking-[0.3em] mb-4">El
+                        Viajero Editorial</span>
+                    <h1 class="font-headline text-5xl lg:text-7xl font-extrabold text-white leading-none mb-6">
+                        Viaja más,<br /><span class="text-white/80">gana siempre.</span>
+                    </h1>
+                    <p class="font-body text-lg text-white/80 max-w-lg mb-10 leading-relaxed">
+                        Bienvenido al ecosistema de lealtad que recompensa cada kilómetro. Convierte tus viajes en
+                        experiencias, beneficios y destinos inolvidables con ADO Go.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="bg-secondary text-white px-8 py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-wider hover:shadow-2xl hover:shadow-secondary/40 transition-all active:scale-95">Únete
+                            ahora</button>
+                        <button
+                            class="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl font-headline font-bold text-sm uppercase tracking-wider hover:bg-white/20 transition-all border border-white/20">Conoce
+                            los niveles</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Cómo Funciona (Editorial Flow) -->
+        <section class="py-24 bg-surface-container-low">
+            <div class="container mx-auto px-8">
+                <div class="mb-16 text-center">
+                    <span
+                        class="font-headline text-sm font-extrabold text-secondary uppercase tracking-[0.3em] block mb-2">Tu
+                        camino al éxito</span>
+                    <h2 class="font-headline text-4xl font-extrabold text-primary">Simplicidad en cada kilómetro</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                    <!-- Step 1 -->
+                    <div class="relative group">
+                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                            <div class="h-48 overflow-hidden">
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Person smiling while using a smartphone app outdoors"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmqZ-r54kH4v5u_n6Xj_l2e4M_Q9mF6D5x9b3v3g2r1n0l9k8j7i6h5g4f3e2d1c0b9a8s7d6f5g4h3j2k1l0p9o8i7u6y5t4r3e2w1q_" />
+                            </div>
+                            <div class="p-8">
+                                <h3 class="font-headline text-xl font-bold text-primary mb-2">1. Regístrate</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Crea tu cuenta en segundos y
+                                    empieza a formar parte de la élite de viajeros.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="hidden md:flex absolute top-1/2 -right-4 -translate-y-1/2 z-20 w-8 h-8 bg-secondary rounded-full items-center justify-center text-white shadow-lg">
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="relative group">
+                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                            <div class="h-48 overflow-hidden">
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Luxury bus interior with a passenger looking out the window"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_oI6_fU9n8m7l6k5j4h3g2f1e0d9c8b7a6s5d4f3g2h1j0k9l8m7n6b5v4c3x2z1q0w9e8r7t6y5u4i3o2p1_" />
+                            </div>
+                            <div class="p-8">
+                                <h3 class="font-headline text-xl font-bold text-primary mb-2">2. Viaja</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Compra tus boletos en
+                                    taquillas o digitalmente usando tu número de viajero.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="hidden md:flex absolute top-1/2 -right-4 -translate-y-1/2 z-20 w-8 h-8 bg-secondary rounded-full items-center justify-center text-white shadow-lg">
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="relative group">
+                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                            <div class="h-48 overflow-hidden">
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Hand holding a digital rewards card on a smartphone"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc-v7b6n5m4l3k2j1h0g9f8d7s6a5s4d3f2g1h0j9k8l7m6n5b4v3c2x1z0q9w8e7r6t5y4u3i2o1p_" />
+                            </div>
+                            <div class="p-8">
+                                <h3 class="font-headline text-xl font-bold text-primary mb-2">3. Acumula</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Cada compra genera puntos ADO
+                                    Go que se reflejan instantáneamente.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="hidden md:flex absolute top-1/2 -right-4 -translate-y-1/2 z-20 w-8 h-8 bg-secondary rounded-full items-center justify-center text-white shadow-lg">
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="group">
+                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                            <div class="h-48 overflow-hidden">
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Happy friends at a cafe using points for a discount"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd-x8c7v6b5n4m3l2k1j0h9g8f7d6s5a4s3d2f1g0h9j8k7l6m5n4b3v2c1x0z9q8w7e6r5t4y3u2i1o0p_" />
+                            </div>
+                            <div class="p-8">
+                                <h3 class="font-headline text-xl font-bold text-primary mb-2">4. Canjea</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Disfruta de boletos gratis,
+                                    upgrades y beneficios con nuestros aliados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Niveles de Membresía -->
+        <section class="py-24 bg-white">
+            <div class="container mx-auto px-8">
+                <div class="text-center mb-20">
+                    <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs block mb-2">Exclusividad a
+                        tu medida</span>
+                    <h2 class="font-headline text-4xl font-extrabold text-primary">Niveles de Membresía</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+                    <!-- Clásico -->
+                    <div class="bg-surface-container-low p-10 rounded-3xl flex flex-col relative overflow-hidden group">
+                        <div class="mb-10 relative">
+                            <!-- High-fidelity Card Visual -->
+                            <div
+                                class="w-full h-40 bg-gradient-to-br from-slate-400 to-slate-600 rounded-xl shadow-2xl p-6 text-white flex flex-col justify-between relative overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-headline font-black text-xl italic opacity-40">ADO Go</span>
+                                    <span class="material-symbols-outlined opacity-50">wifi_channel</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] uppercase tracking-widest opacity-70">Membership
+                                        Card</span>
+                                    <span class="font-headline font-bold text-lg tracking-[0.2em]">CLÁSICO</span>
+                                </div>
+                                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl">
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="font-headline text-2xl font-bold text-primary mb-6">Clásico</h3>
+                        <div class="mb-8">
+                            <span class="text-4xl font-black text-primary">Gratis</span>
+                            <p class="text-outline text-sm mt-1">Para el viajero ocasional</p>
+                        </div>
+                        <ul class="space-y-4 mb-10">
+                            <li class="flex items-center gap-3 text-sm"><span
+                                    class="material-symbols-outlined text-primary text-lg">check_circle</span> 1 punto
+                                por cada $10 MXN</li>
+                            <li class="flex items-center gap-3 text-sm"><span
+                                    class="material-symbols-outlined text-primary text-lg">check_circle</span> Acceso a
+                                promociones base</li>
+                        </ul>
+                        <button
+                            class="w-full py-4 rounded-xl bg-surface-container-highest text-primary font-bold uppercase tracking-wider text-xs">Nivel
+                            Actual</button>
+                    </div>
+                    <!-- Gold (Premium) -->
+                    <div class="relative scale-105 z-10">
+                        <div
+                            class="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-6 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl">
+                            Más Popular</div>
+                        <div
+                            class="editorial-gradient p-10 rounded-3xl flex flex-col text-white shadow-2xl shadow-primary/30">
+                            <div class="mb-10 relative">
+                                <!-- Gold Card Visual -->
+                                <div
+                                    class="w-full h-40 bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 rounded-xl shadow-2xl p-6 text-white flex flex-col justify-between relative overflow-hidden">
+                                    <div class="flex justify-between items-start">
+                                        <span class="font-headline font-black text-xl italic opacity-60">ADO Go</span>
+                                        <span class="material-symbols-outlined opacity-80"
+                                            style="font-variation-settings: 'FILL' 1">stars</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-[10px] uppercase tracking-widest opacity-80">Premium
+                                            Access</span>
+                                        <span class="font-headline font-bold text-lg tracking-[0.2em]">GOLD
+                                            MEMBER</span>
+                                    </div>
+                                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/20 rotate-45 blur-xl">
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="font-headline text-2xl font-bold mb-6 flex items-center gap-2">Gold <span
+                                    class="material-symbols-outlined text-yellow-400"
+                                    style="font-variation-settings: 'FILL' 1;">stars</span></h3>
+                            <div class="mb-8">
+                                <span class="text-4xl font-black">$499</span>
+                                <span class="text-xs text-white/60">/ anual</span>
+                            </div>
+                            <ul class="space-y-4 mb-10">
+                                <li class="flex items-center gap-3 text-sm"><span
+                                        class="material-symbols-outlined text-yellow-400 text-lg"
+                                        style="font-variation-settings: 'FILL' 1;">verified</span> 5 puntos por cada $10
+                                    MXN</li>
+                                <li class="flex items-center gap-3 text-sm"><span
+                                        class="material-symbols-outlined text-yellow-400 text-lg"
+                                        style="font-variation-settings: 'FILL' 1;">verified</span> Abordaje prioritario
+                                    VIP</li>
+                                <li class="flex items-center gap-3 text-sm"><span
+                                        class="material-symbols-outlined text-yellow-400 text-lg"
+                                        style="font-variation-settings: 'FILL' 1;">verified</span> Sala Lounge en
+                                    terminales</li>
+                            </ul>
+                            <button
+                                class="w-full py-4 rounded-xl bg-secondary text-white font-bold uppercase tracking-wider text-xs hover:bg-red-600 transition-colors shadow-lg">Seleccionar
+                                Gold</button>
+                        </div>
+                    </div>
+                    <!-- Silver -->
+                    <div class="bg-surface-container-low p-10 rounded-3xl flex flex-col relative overflow-hidden">
+                        <div class="mb-10 relative">
+                            <!-- Silver Card Visual -->
+                            <div
+                                class="w-full h-40 bg-gradient-to-br from-slate-200 to-slate-400 rounded-xl shadow-2xl p-6 text-primary flex flex-col justify-between relative overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-headline font-black text-xl italic opacity-40">ADO Go</span>
+                                    <span class="material-symbols-outlined opacity-50">shutter_speed</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] uppercase tracking-widest opacity-70">Priority
+                                        Status</span>
+                                    <span class="font-headline font-bold text-lg tracking-[0.2em]">SILVER</span>
+                                </div>
+                                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/40 rounded-full blur-2xl">
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="font-headline text-2xl font-bold text-primary mb-6">Silver</h3>
+                        <div class="mb-8">
+                            <span class="text-4xl font-black text-primary">$199</span>
+                            <span class="text-xs text-outline">/ anual</span>
+                        </div>
+                        <ul class="space-y-4 mb-10">
+                            <li class="flex items-center gap-3 text-sm"><span
+                                    class="material-symbols-outlined text-primary text-lg">check_circle</span> 2.5
+                                puntos por cada $10 MXN</li>
+                            <li class="flex items-center gap-3 text-sm"><span
+                                    class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                Descuentos con aliados hoteleros</li>
+                            <li class="flex items-center gap-3 text-sm"><span
+                                    class="material-symbols-outlined text-primary text-lg">check_circle</span> Fila
+                                preferente</li>
+                        </ul>
+                        <button
+                            class="w-full py-4 rounded-xl border-2 border-primary text-primary font-bold uppercase tracking-wider text-xs hover:bg-primary hover:text-white transition-colors">Mejorar
+                            a Silver</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Red de Aliados (Interactive Redesign) -->
+        <section class="py-24 bg-surface-container-highest">
+            <div class="container mx-auto px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <!-- Left: Categories -->
+                    <div class="lg:col-span-4">
+                        <span
+                            class="text-secondary font-extrabold uppercase tracking-widest text-xs block mb-4">Ecosistema
+                            de Beneficios</span>
+                        <h2 class="font-headline text-4xl font-extrabold text-primary mb-8 leading-tight">Nuestra Red de
+                            Aliados</h2>
+                        <div class="space-y-2">
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-primary text-white font-bold transition-all shadow-lg">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">local_taxi</span>
+                                    <span>Taxis y Movilidad</span>
+                                </div>
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">restaurant</span>
+                                    <span>Restaurantes</span>
+                                </div>
+                            </button>
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">hotel</span>
+                                    <span>Hoteles</span>
+                                </div>
+                            </button>
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                    <span>Entretenimiento</span>
+                                </div>
+                            </button>
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">shopping_bag</span>
+                                    <span>Compras</span>
+                                </div>
+                            </button>
+                            <button
+                                class="w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">medical_services</span>
+                                    <span>Salud y Bienestar</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Right: Partner Showcase -->
+                    <div class="lg:col-span-8 bg-white/50 p-8 rounded-3xl border border-white/50 backdrop-blur-sm">
+                        <div class="flex justify-between items-center mb-10">
+                            <h3 class="font-headline text-xl font-bold text-primary">Taxis y Movilidad (4)</h3>
+                            <a class="text-sm font-bold text-secondary flex items-center gap-1 group" href="#">Ver todos
+                                los aliados <span
+                                    class="material-symbols-outlined text-xs group-hover:translate-x-1 transition-transform">arrow_forward</span></a>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Partner 1 -->
+                            <div
+                                class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-colors group">
+                                <div class="flex gap-4 items-center mb-4">
+                                    <div
+                                        class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                        <span class="text-primary font-black text-xl italic">Taxi+</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-primary">Taxi Express Regional</h4>
+                                        <p class="text-xs text-outline">Transporte terrestre seguro</p>
+                                    </div>
+                                </div>
+                                <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                    <p class="text-sm font-bold text-primary">10% de descuento directo</p>
+                                    <p class="text-[10px] text-primary/60">Presentando tu ID digital ADO Go</p>
+                                </div>
+                            </div>
+                            <!-- Partner 2 -->
+                            <div
+                                class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-colors group">
+                                <div class="flex gap-4 items-center mb-4">
+                                    <div
+                                        class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                        <span class="text-primary font-black text-xl italic">Move!</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-primary">Move It Private</h4>
+                                        <p class="text-xs text-outline">Servicio ejecutivo</p>
+                                    </div>
+                                </div>
+                                <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                    <p class="text-sm font-bold text-primary">Acumula puntos dobles</p>
+                                    <p class="text-[10px] text-primary/60">En traslados hacia/desde terminales</p>
+                                </div>
+                            </div>
+                            <!-- Partner 3 -->
+                            <div
+                                class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-colors group">
+                                <div class="flex gap-4 items-center mb-4">
+                                    <div
+                                        class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                        <span class="text-primary font-black text-xl italic">Airport</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-primary">Transfers Aéreos</h4>
+                                        <p class="text-xs text-outline">Conexión aeroportuaria</p>
+                                    </div>
+                                </div>
+                                <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                    <p class="text-sm font-bold text-primary">Cupón de $50 MXN</p>
+                                    <p class="text-[10px] text-primary/60">Por cada viaje ADO Platino</p>
+                                </div>
+                            </div>
+                            <!-- Partner 4 -->
+                            <div
+                                class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-colors group">
+                                <div class="flex gap-4 items-center mb-4">
+                                    <div
+                                        class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                        <span class="text-primary font-black text-xl italic">EcoGo</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-primary">EcoGo Rentals</h4>
+                                        <p class="text-xs text-outline">Renta de autos eléctricos</p>
+                                    </div>
+                                </div>
+                                <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                    <p class="text-sm font-bold text-primary">Seguro incluido gratis</p>
+                                    <p class="text-[10px] text-primary/60">Exclusivo niveles Silver y Gold</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Tu cuenta digital (Expanded Mobile Showcase) -->
+        <section class="py-24 bg-white relative overflow-hidden">
+            <div class="container mx-auto px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
+                    <div class="lg:col-span-6 order-2 lg:order-1 relative h-[600px] flex items-center justify-center">
+                        <!-- Fanned Mobile Screens -->
+                        <div class="relative w-full max-w-lg mx-auto h-full">
+                            <!-- Screen 3: Digital ID -->
+                            <div
+                                class="absolute left-0 top-1/2 -translate-y-1/2 rotate-[-15deg] w-64 h-[480px] bg-primary rounded-[2.5rem] p-3 shadow-2xl z-10 scale-90 opacity-60">
+                                <div
+                                    class="bg-white h-full rounded-[2rem] overflow-hidden p-6 flex flex-col items-center">
+                                    <span class="font-black text-primary text-sm mb-8">Digital ID</span>
+                                    <div
+                                        class="w-40 h-40 bg-surface-container-low rounded-xl flex items-center justify-center mb-6">
+                                        <span
+                                            class="material-symbols-outlined text-6xl text-primary/20">qr_code_2</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="font-bold text-primary text-sm">JUAN PÉREZ</p>
+                                        <p class="text-[10px] text-outline">SOCIO GOLD #884321</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Screen 2: History -->
+                            <div
+                                class="absolute right-0 top-1/2 -translate-y-1/2 rotate-[15deg] w-64 h-[480px] bg-primary rounded-[2.5rem] p-3 shadow-2xl z-10 scale-90 opacity-60">
+                                <div class="bg-white h-full rounded-[2rem] overflow-hidden p-6">
+                                    <span class="font-black text-primary text-sm block mb-6">Actividad</span>
+                                    <div class="space-y-4">
+                                        <div class="h-12 bg-surface-container-low rounded-lg animate-pulse"></div>
+                                        <div class="h-12 bg-surface-container-low rounded-lg animate-pulse"></div>
+                                        <div class="h-12 bg-surface-container-low rounded-lg animate-pulse"></div>
+                                        <div class="h-12 bg-surface-container-low rounded-lg animate-pulse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Screen 1: Dashboard (Main) -->
+                            <div
+                                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-[520px] bg-primary rounded-[2.5rem] p-3 shadow-[0_40px_80px_-15px_rgba(95,33,103,0.5)] z-20">
+                                <div class="bg-background h-full rounded-[2rem] overflow-hidden">
+                                    <div class="p-5 bg-primary text-white pt-8">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <span class="font-headline font-bold text-xs">ADO Go</span>
+                                            <span class="material-symbols-outlined text-sm">menu</span>
+                                        </div>
+                                        <div
+                                            class="bg-white/10 p-5 rounded-2xl backdrop-blur-xl border border-white/20">
+                                            <p class="text-[8px] opacity-70 uppercase tracking-widest mb-1">Puntos
+                                                Disponibles</p>
+                                            <p class="text-2xl font-black mb-3">1,250 <span
+                                                    class="text-[10px] font-normal">pts</span></p>
+                                            <div class="w-full bg-white/20 h-1 rounded-full overflow-hidden">
+                                                <div class="w-3/4 bg-secondary h-full"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-5">
+                                        <p
+                                            class="font-headline font-bold text-[10px] text-primary mb-4 uppercase tracking-widest">
+                                            Próximos Viajes</p>
+                                        <div class="space-y-3">
+                                            <div
+                                                class="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-primary/5">
+                                                <div
+                                                    class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
+                                                    <span
+                                                        class="material-symbols-outlined text-sm">directions_bus</span>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[10px] font-bold">CDMX - Puebla</p>
+                                                    <p class="text-[8px] text-outline">15 Dic, 2024</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-6 order-1 lg:order-2">
+                        <span
+                            class="text-secondary font-extrabold uppercase tracking-widest text-xs">Omnicanalidad</span>
+                        <h2
+                            class="font-headline text-4xl lg:text-5xl font-extrabold text-primary mt-4 mb-8 leading-tight">
+                            Tu cuenta digital, siempre contigo.</h2>
+                        <div class="space-y-10">
+                            <div class="flex gap-6">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">qr_code_2</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-headline font-bold text-xl text-primary">Acceso sin contacto</h4>
+                                    <p class="text-on-surface-variant leading-relaxed">Usa tu código QR dinámico para
+                                        identificarte y acumular puntos sin necesidad de tarjetas físicas en taquilla o
+                                        abordaje.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-6">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">history</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-headline font-bold text-xl text-primary">Historial de Beneficios
+                                    </h4>
+                                    <p class="text-on-surface-variant leading-relaxed">Revisa tus movimientos,
+                                        redenciones y planea tus próximos beneficios desde la palma de tu mano en tiempo
+                                        real.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-6">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">notifications_active</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-headline font-bold text-xl text-primary">Alertas Inteligentes</h4>
+                                    <p class="text-on-surface-variant leading-relaxed">Recibe notificaciones sobre
+                                        promociones exclusivas basadas en tus destinos favoritos y vigencia de tus
+                                        puntos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- FAQ Section -->
+        <section class="py-24 bg-surface-container-low">
+            <div class="container mx-auto px-8 max-w-4xl">
+                <div class="text-center mb-16">
+                    <h2 class="font-headline text-4xl font-extrabold text-primary">Preguntas Frecuentes</h2>
+                    <p class="text-on-surface-variant mt-4">Todo lo que necesitas saber sobre el programa de lealtad ADO
+                        Go.</p>
+                </div>
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm" open="">
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Cómo me registro en el programa?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                            Puedes registrarte a través de nuestro sitio web, la app móvil oficial de ADO o directamente
+                            en las taquillas de cualquier terminal proporcionando tu nombre y correo electrónico.
+                        </div>
+                    </details>
+                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm">
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Los puntos tienen fecha de vencimiento?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                            Los puntos tienen una vigencia de 12 meses a partir de la fecha en que se acumularon. Te
+                            notificaremos 30 días antes de que cualquier bloque de puntos esté por vencer.
+                        </div>
+                    </details>
+                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm">
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Puedo transferir mis puntos a otra cuenta?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                            Por el momento, los puntos son personales e intransferibles. Sin embargo, puedes usar tus
+                            puntos para comprar boletos a nombre de terceras personas.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-primary dark:bg-black w-full text-white">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 px-12 py-20">
+            <div class="flex flex-col gap-8">
+                <span class="text-3xl font-black text-white font-headline tracking-tighter">ADO Go</span>
+                <p class="font-inter text-sm leading-relaxed text-white/60 max-w-sm">
+                    Elevando el estándar del viaje por carretera en México a través de la excelencia en el servicio y la
+                    recompensa a la lealtad de nuestros viajeros.
+                </p>
+                <div class="flex gap-6">
+                    <span
+                        class="material-symbols-outlined cursor-pointer hover:text-secondary transition-colors opacity-80 hover:opacity-100">social_leaderboard</span>
+                    <span
+                        class="material-symbols-outlined cursor-pointer hover:text-secondary transition-colors opacity-80 hover:opacity-100">share</span>
+                    <span
+                        class="material-symbols-outlined cursor-pointer hover:text-secondary transition-colors opacity-80 hover:opacity-100">language</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="flex flex-col gap-4">
+                    <h5 class="text-xs font-black uppercase tracking-[0.2em] text-secondary">Legal</h5>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Términos y
+                        Condiciones</a>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Aviso de
+                        Privacidad</a>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Reglas del
+                        Programa</a>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <h5 class="text-xs font-black uppercase tracking-[0.2em] text-secondary">Soporte</h5>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Preguntas
+                        Frecuentes</a>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Contacto</a>
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors"
+                        href="#">Terminales</a>
+                </div>
+            </div>
+        </div>
+        <div class="px-12 py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="font-inter text-[10px] leading-relaxed text-white/40 uppercase tracking-widest">© 2024 ADO Go. El
+                Viajero Editorial. Todos los derechos reservados.</p>
+            <div class="flex items-center gap-6 opacity-30 grayscale hover:opacity-60 transition-opacity">
+                <img alt="Visa Logo" class="h-5" data-alt="visa card payment logo"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSjZVUN27MFuqFDwZFZqeHZmkp-JN6Zu8lKhY25-Ox7T18agOeUPRZrocDfQM_5FOy5-hkFo1GAl29lEydk94EgXJD6MI48WopyHXEMS2dImFY0eOGwiTV5LWzlOYPuXBxzPNfUc72zj4tlKQkjutotTrBX-J0uTMy8sVy4h5AV-4PA0TLs1K70-fPXYkZwAO9lQ6oYoCQsZDSGt0Nu7Kv9oWx4e7eVqnTxIh2R_O4ZdgxKYH5SOpQkUPcZ8dthsId_erzm7dxXI8" />
+                <img alt="Mastercard Logo" class="h-8" data-alt="mastercard payment logo"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1afQhpk-AY6fEEAWPUzsVequ0Y4ai6QoGGPkIc4gly9MhwAP-WlwKzN3XrWB96P-_AyKX_F6SkqzXcXNUfK4UlZ3opoSmiORlWkIyuYCkAKawmFRliZnA-LvLDS25ABgBTLtO0XQ2yT_QSZTcWfJceBS18i2_qhqyZ7Q2vq0G_ONinGwW5coHKf4kqm7dW33Z0gLKSqXdz-KtbikrRcEvtulL7Sym2UrY0zdursGJTcbCm5JJlt-wDILEGrynNXHg2CaBErKxEdo" />
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
