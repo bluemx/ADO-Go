@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Descarga ADO GO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #fdf8fb;
+            font-family: 'Inter', sans-serif;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #5F2167;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div class="text-center">
+        <div class="mb-8">
+            <img src="assets/ADO-GO.svg" class="h-12 mx-auto" alt="ADO GO">
+        </div>
+        
+        <div class="loader mb-6"></div>
+        
+        <h1 class="font-headline text-2xl font-black text-[#5F2167] mb-2">Redirigiendo a la tienda...</h1>
+        <p class="text-gray-500 text-sm">Estamos detectando tu dispositivo para llevarte a la App oficial.</p>
+        
+        <div class="mt-12 text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+            Si no eres redirigido, <a id="manual-link" href="#" class="text-[#DA291C] underline">haz clic aquí</a>.
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const appleURL = "https://apps.apple.com/mx/app/ado-boletos-de-autob%C3%BAs/id475225134";
+            const googleURL = "https://play.google.com/store/apps/details?id=com.mobilityado.ado";
+            const manualLink = document.getElementById('manual-link');
+
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let finalURL = appleURL; // Default/iOS
+
+            if (/android/i.test(userAgent)) {
+                finalURL = googleURL;
+            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                finalURL = appleURL;
+            }
+
+            manualLink.href = finalURL;
+
+            // Short timeout to allow the page to render briefly
+            setTimeout(() => {
+                window.location.href = finalURL;
+            }, 1500);
+        })();
+    </script>
+</body>
+</html>
