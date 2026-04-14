@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>ADO Go | El Viajero Editorial</title>
+    <title>ADO GO</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
@@ -13,6 +14,132 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .custom-marker {
+            width: 20px;
+            height: 20px;
+            background: #DA291C;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(218, 41, 28, 0.6);
+            position: relative;
+        }
+
+        .custom-marker::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: rgba(218, 41, 28, 0.4);
+            animation: pulse-marker 2s infinite;
+        }
+
+        @keyframes pulse-marker {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes custom-pop-in {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        @keyframes marquee-infinite {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee-infinite {
+            display: flex;
+            width: max-content;
+            animation: marquee-infinite 40s linear infinite;
+        }
+
+        /* Prevent image jumping and ensure consistent box sizing */
+        .brand-box {
+            width: 33.333vw;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            height: 12rem;
+            /* 192px / h-48 */
+        }
+
+        @media (max-width: 768px) {
+            .brand-box {
+                height: 8rem;
+                /* 128px / h-32 */
+            }
+        }
+
+
+        @keyframes float-3d {
+            0% {
+                transform: perspective(1500px) rotateY(-10deg) rotateX(10deg) translateY(0px);
+            }
+
+            50% {
+                transform: perspective(1500px) rotateY(15deg) rotateX(-5deg) translateY(-20px);
+            }
+
+            100% {
+                transform: perspective(1500px) rotateY(-10deg) rotateX(10deg) translateY(0px);
+            }
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+
+        .marker-pop-in {
+            animation: custom-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .leaflet-container {
+            background: #1a101f !important;
+        }
+
+        /* Dark Map Overlays */
+        .leaflet-tile {
+            filter: grayscale(100%) invert(100%) brightness(95%) contrast(90%);
+        }
+    </style>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -112,7 +239,7 @@
         class="fixed w-full top-0 z-50 bg-white/80 dark:bg-purple-950/80 backdrop-blur-xl shadow-xl shadow-purple-900/5 flex justify-between items-center px-8 py-4 max-w-full">
         <div class="flex items-center gap-8">
             <span class="text-2xl font-black text-primary dark:text-purple-100 tracking-tighter font-headline">
-                <img src="assets/ADO-GO.svg" class="h-10" alt="ADO Go">
+                <img src="assets/ADO-GO.svg" class="h-10" alt="ADO GO">
             </span>
         </div>
 
@@ -125,6 +252,8 @@
                     href="#como-funciona">Cómo funciona</a>
                 <a class="font-manrope text-sm font-bold tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
                     href="#beneficios">Beneficios</a>
+                <a class="font-manrope text-sm font-bold tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
+                    href="#cuenta-digital">App</a>
                 <a class="font-manrope text-sm font-bold tracking-wide uppercase text-purple-800/70 dark:text-purple-200/70 hover:text-primary transition-colors duration-300"
                     href="#aliados">Aliados</a>
             </div>
@@ -149,6 +278,8 @@
                 href="#como-funciona">Cómo funciona</a>
             <a class="text-white text-3xl font-headline font-black uppercase tracking-[0.2em] hover:text-secondary transition-colors"
                 href="#beneficios">Beneficios</a>
+            <a class="text-white text-3xl font-headline font-black uppercase tracking-[0.2em] hover:text-secondary transition-colors"
+                href="#cuenta-digital">App</a>
             <a class="text-white text-3xl font-headline font-black uppercase tracking-[0.2em] hover:text-secondary transition-colors"
                 href="#aliados">Aliados</a>
             <a class="btn-unete mt-6 bg-white text-primary px-12 py-5 rounded-xl font-headline font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-transform"
@@ -210,7 +341,7 @@
                     </h1>
                     <p class="font-body text-lg text-white/80 max-w-lg mb-10 leading-relaxed">
                         Bienvenido al ecosistema de lealtad que recompensa cada kilómetro. Convierte tus viajes en
-                        experiencias, beneficios y destinos inolvidables con ADO Go.
+                        experiencias, beneficios y destinos inolvidables con ADO GO.
                     </p>
                     <div class="flex flex-wrap gap-4">
                         <a href="#registro"
@@ -223,6 +354,7 @@
                 </div>
             </div>
         </section>
+
         <!-- Cómo Funciona (Editorial Flow) -->
         <section id="como-funciona" class="py-24 bg-surface-container-low">
             <div class="container mx-auto px-8">
@@ -235,7 +367,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
                     <!-- Step 1 -->
                     <div class="relative group">
-                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                        <div
+                            class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col max-w-[320px] mx-auto">
                             <div class="aspect-square w-full overflow-hidden">
                                 <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     data-alt="Person smiling while using a smartphone app outdoors"
@@ -254,7 +387,8 @@
                     </div>
                     <!-- Step 2 -->
                     <div class="relative group">
-                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                        <div
+                            class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col max-w-[320px] mx-auto">
                             <div class="aspect-square w-full overflow-hidden">
                                 <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     data-alt="Luxury bus interior with a passenger looking out the window"
@@ -273,7 +407,8 @@
                     </div>
                     <!-- Step 3 -->
                     <div class="relative group">
-                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                        <div
+                            class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col max-w-[320px] mx-auto">
                             <div class="aspect-square w-full overflow-hidden">
                                 <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     data-alt="Hand holding a digital rewards card on a smartphone"
@@ -292,7 +427,8 @@
                     </div>
                     <!-- Step 4 -->
                     <div class="group">
-                        <div class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col">
+                        <div
+                            class="bg-white rounded-2xl overflow-hidden card-shadow h-full flex flex-col max-w-[320px] mx-auto">
                             <div class="aspect-square w-full overflow-hidden">
                                 <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     data-alt="Happy friends at a cafe using points for a discount"
@@ -319,18 +455,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
                     <!-- Clásico -->
                     <div class="bg-surface-container-low p-10 rounded-3xl flex flex-col relative overflow-hidden group">
-                        <div class="mb-10 relative">
+                        <div class="mb-10 relative @container">
                             <!-- High-fidelity Card Visual -->
                             <div
-                                class="w-full h-40 bg-gradient-to-br from-slate-400 to-slate-600 rounded-xl shadow-2xl p-6 text-white flex flex-col justify-between relative overflow-hidden">
+                                class="scroll-3d-card w-full max-w-[320px] mx-auto aspect-[1.5/1] bg-gradient-to-br from-primary via-primary-dark to-purple-900 rounded-xl shadow-2xl @[280px]:p-6 p-4 text-white flex flex-col justify-between relative overflow-hidden transition-transform duration-300 ease-out">
                                 <div class="flex justify-between items-start">
-                                    <img src="assets/ADO-GO.svg" class="h-6 opacity-40" alt="ADO Go" />
-                                    <span class="material-symbols-outlined opacity-50">wifi_channel</span>
+                                    <img src="assets/ADO-GO.svg" class="@[280px]:h-6 h-4 brightness-0 invert opacity-80"
+                                        alt="ADO GO" />
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-widest opacity-70">Membership
-                                        Card</span>
-                                    <span class="font-headline font-bold text-lg tracking-[0.2em]">CLÁSICO</span>
+                                    <span
+                                        class="@[280px]:text-[10px] text-[7px] uppercase tracking-widest opacity-70">Miembro</span>
+                                    <span
+                                        class="font-headline font-bold @[280px]:text-lg text-[12px] tracking-[0.1em]">CLÁSICO</span>
                                 </div>
                                 <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl">
                                 </div>
@@ -353,35 +490,34 @@
                             class="btn-unete w-full py-4 rounded-xl bg-surface-container-highest text-primary font-bold uppercase tracking-wider text-xs">la
                             quiero ahora</button>
                     </div>
-                    <!-- Gold (Premium) -->
+                    <!-- Oro (Premium) -->
                     <div class="relative scale-105 z-10">
                         <div
                             class="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-6 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl">
                             Más Popular</div>
                         <div
                             class="editorial-gradient p-10 rounded-3xl flex flex-col text-white shadow-2xl shadow-primary/30">
-                            <div class="mb-10 relative">
-                                <!-- Gold Card Visual -->
+                            <div class="mb-10 relative @container">
+                                <!-- Oro Card Visual -->
                                 <div
-                                    class="w-full h-40 bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 rounded-xl shadow-2xl p-6 text-white flex flex-col justify-between relative overflow-hidden">
+                                    class="scroll-3d-card w-full max-w-[320px] mx-auto aspect-[1.5/1] bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 rounded-xl shadow-2xl @[280px]:p-6 p-4 text-white flex flex-col justify-between relative overflow-hidden transition-transform duration-300 ease-out">
                                     <div class="flex justify-between items-start">
-                                        <img src="assets/ADO-GO.svg" class="h-6 opacity-60" alt="ADO Go" />
-                                        <span class="material-symbols-outlined opacity-80"
-                                            style="font-variation-settings: 'FILL' 1">stars</span>
+                                        <img src="assets/ADO-GO.svg" class="@[280px]:h-6 h-4 opacity-60" alt="ADO GO" />
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-[10px] uppercase tracking-widest opacity-80">Premium
-                                            Access</span>
-                                        <span class="font-headline font-bold text-lg tracking-[0.2em]">GOLD
-                                            MEMBER</span>
+                                        <span
+                                            class="@[280px]:text-[10px] text-[7px] uppercase tracking-widest opacity-80">Acceso
+                                            premium</span>
+                                        <span
+                                            class="font-headline font-bold @[280px]:text-lg text-[10px] tracking-[0.1em]">MIEMBRO
+                                            ORO
+                                        </span>
                                     </div>
                                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/20 rotate-45 blur-xl">
                                     </div>
                                 </div>
                             </div>
-                            <h3 class="font-headline text-2xl font-bold mb-6 flex items-center gap-2">Gold <span
-                                    class="material-symbols-outlined text-yellow-400"
-                                    style="font-variation-settings: 'FILL' 1;">stars</span></h3>
+                            <h3 class="font-headline text-2xl font-bold mb-6 flex items-center gap-2">Oro</h3>
                             <div class="mb-8">
                                 <span class="text-4xl font-black">$499</span>
                                 <span class="text-xs text-white/60">/ anual</span>
@@ -407,24 +543,25 @@
                     </div>
                     <!-- Silver -->
                     <div class="bg-surface-container-low p-10 rounded-3xl flex flex-col relative overflow-hidden">
-                        <div class="mb-10 relative">
+                        <div class="mb-10 relative @container">
                             <!-- Silver Card Visual -->
                             <div
-                                class="w-full h-40 bg-gradient-to-br from-slate-200 to-slate-400 rounded-xl shadow-2xl p-6 text-primary flex flex-col justify-between relative overflow-hidden">
+                                class="scroll-3d-card w-full max-w-[320px] mx-auto aspect-[1.5/1] bg-gradient-to-br from-slate-200 to-slate-400 rounded-xl shadow-2xl @[280px]:p-6 p-4 text-primary flex flex-col justify-between relative overflow-hidden transition-transform duration-300 ease-out">
                                 <div class="flex justify-between items-start">
-                                    <img src="assets/ADO-GO.svg" class="h-6 opacity-40" alt="ADO Go" />
-                                    <span class="material-symbols-outlined opacity-50">shutter_speed</span>
+                                    <img src="assets/ADO-GO.svg" class="@[280px]:h-6 h-4 opacity-40" alt="ADO GO" />
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-widest opacity-70">Priority
-                                        Status</span>
-                                    <span class="font-headline font-bold text-lg tracking-[0.2em]">SILVER</span>
+                                    <span
+                                        class="@[280px]:text-[10px] text-[7px] uppercase tracking-widest opacity-70">Miembro
+                                        prioritario</span>
+                                    <span
+                                        class="font-headline font-bold @[280px]:text-lg text-[10px] tracking-[0.1em]">PLATA</span>
                                 </div>
                                 <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/40 rounded-full blur-2xl">
                                 </div>
                             </div>
                         </div>
-                        <h3 class="font-headline text-2xl font-bold text-primary mb-6">Silver</h3>
+                        <h3 class="font-headline text-2xl font-bold text-primary mb-6">Plata</h3>
                         <div class="mb-8">
                             <span class="text-4xl font-black text-primary">$199</span>
                             <span class="text-xs text-outline">/ anual</span>
@@ -447,556 +584,112 @@
                 </div>
             </div>
         </section>
-        <!-- Red de Aliados (Interactive Redesign) -->
-        <section id="aliados" class="py-24 bg-surface-container-highest">
-            <div class="container mx-auto px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                    <!-- Left: Categories -->
-                    <div class="lg:col-span-4">
-                        <span
-                            class="text-secondary font-extrabold uppercase tracking-widest text-xs block mb-4">Ecosistema
-                            de Beneficios</span>
-                        <h2 class="font-headline text-4xl font-extrabold text-primary mb-8 leading-tight">Nuestra Red de
-                            Aliados</h2>
-                        <div class="space-y-2" id="aliados-nav">
-                            <button data-category="movilidad"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-primary text-white font-bold transition-all shadow-lg active-category">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">local_taxi</span>
-                                    <span>Taxis y Movilidad</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
-                            </button>
-                            <button data-category="restaurantes"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">restaurant</span>
-                                    <span>Restaurantes</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
-                            </button>
-                            <button data-category="hoteles"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">hotel</span>
-                                    <span>Hoteles</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
-                            </button>
-                            <button data-category="entretenimiento"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">confirmation_number</span>
-                                    <span>Entretenimiento</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
-                            </button>
-                            <button data-category="compras"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">shopping_bag</span>
-                                    <span>Compras</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
-                            </button>
-                            <button data-category="salud"
-                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <span class="material-symbols-outlined">medical_services</span>
-                                    <span>Salud y Bienestar</span>
-                                </div>
-                                <span
-                                    class="material-symbols-outlined transition-opacity duration-300 ">chevron_right</span>
-                            </button>
+        <!-- Marcas Aliadas Marquee -->
+        <div class="bg-white py-16 border-y border-surface-container-high overflow-hidden relative">
+            <div class="text-center mb-12 relative z-10 px-4">
+                <span class="text-sm font-black uppercase tracking-[0.2em] text-primary">Descubre las marcas afiliadas
+                    donde tus compras suman puntos ADO GO</span>
+            </div>
+
+            <div class="relative w-full overflow-hidden">
+                <!-- Overlay Gradients -->
+                <div
+                    class="absolute inset-y-0 left-0 w-24 md:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-y-0 right-0 w-24 md:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none">
+                </div>
+
+                <!-- The Moving Track -->
+                <div class="animate-marquee-infinite">
+                    <!-- First Set of 13 -->
+                    <div class="flex flex-none">
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/01.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/02.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/03.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/04.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/05.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/06.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/07.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/08.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/09.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/10.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/11.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/12.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/13.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
                     </div>
-                    <!-- Right: Partner Showcase -->
-                    <div class="lg:col-span-8 bg-white/50 p-8 rounded-3xl border border-white/50 backdrop-blur-sm min-h-[500px]"
-                        id="aliados-list">
-                        <!-- Taxis Content -->
-                        <div id="cat-movilidad" class="aliado-pane">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Taxis y Movilidad</h3>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
-                                            <span class="text-primary font-black text-xl italic">Taxi+</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Taxi Express Regional</h4>
-                                            <p class="text-xs text-outline">Transporte terrestre seguro</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">10% de descuento directo</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
-                                            <span class="text-primary font-black text-xl italic">Move!</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Move It Private</h4>
-                                            <p class="text-xs text-outline">Servicio ejecutivo</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Acumula puntos dobles</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
-                                            <span class="text-primary font-black text-xl italic">Quick</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Quick Shuttle</h4>
-                                            <p class="text-xs text-outline">Traslados rápidos</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">$50 MXN de Regalo</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center">
-                                            <span class="text-primary font-black text-xl italic">City</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">City Connect</h4>
-                                            <p class="text-xs text-outline">Movilidad urbana</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Viaje gratis c/5 trayectos</p>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Duplicate Set -->
+                    <div class="flex flex-none" aria-hidden="true">
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/01.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
-
-                        <!-- Restaurantes Content -->
-                        <div id="cat-restaurantes" class="aliado-pane hidden">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Restaurantes </h3>
-
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">restaurant</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Gourmet Garden</h4>
-                                            <p class="text-xs text-outline">Cocina de autor</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Postre gratis por visita</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">local_pizza</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Pizza Real</h4>
-                                            <p class="text-xs text-outline">Sabor artesanal</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">2x1 en pizzas medianas</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">coffee</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Coffee Loft</h4>
-                                            <p class="text-xs text-outline">Barista premium</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">15% desc. en desayunos</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">set-meal</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Mar & Tierra</h4>
-                                            <p class="text-xs text-outline">Especialidades</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Bebida de cortesía</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/02.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
-
-                        <!-- Hoteles Content -->
-                        <div id="cat-hoteles" class="aliado-pane hidden">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Hoteles </h3>
-
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">hotel</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Hotel Express Center</h4>
-                                            <p class="text-xs text-outline">Cerca de la terminal</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Late check-out gratis</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">apartment</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Urban Suites</h4>
-                                            <p class="text-xs text-outline">Lujo en la ciudad</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">20% desc. fines de semana</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">bed</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Sleep Well Inn</h4>
-                                            <p class="text-xs text-outline">Confort económico</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Desayuno buffet incluido</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">deck</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Beach Resort & Spa</h4>
-                                            <p class="text-xs text-outline">Paraíso vacacional</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Puntos x3 en estancias</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/03.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
-
-                        <!-- Entretenimiento Content -->
-                        <div id="cat-entretenimiento" class="aliado-pane hidden">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Entretenimiento </h3>
-
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">movie</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Cineplex Plus</h4>
-                                            <p class="text-xs text-outline">Salas de cine premium</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">2x1 en taquilla todos los días</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">attractions</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Action Park X</h4>
-                                            <p class="text-xs text-outline">Parque de diversiones</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Fast Pass gratuito incluido</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">theater_comedy</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Gran Teatro</h4>
-                                            <p class="text-xs text-outline">Obras y musicales</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">15% desc. en zonas VIP</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">museum</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Museo de Arte</h4>
-                                            <p class="text-xs text-outline">Exposiciones exclusivas</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Entrada 2x1 los domingos</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/04.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
-
-                        <!-- Compras Content -->
-                        <div id="cat-compras" class="aliado-pane hidden">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Compras </h3>
-
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">checkroom</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Moda Urbana Base</h4>
-                                            <p class="text-xs text-outline">Tiendas de ropa</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">10% adicional rebajas</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">devices</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">TechZone One</h4>
-                                            <p class="text-xs text-outline">Electrónica de consumo</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Micas gratis en celulares</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">menu_book</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Librería El Lector</h4>
-                                            <p class="text-xs text-outline">Libros y artículos</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">$100 MXN en compra > $500</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">card_giftcard</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Gift Shop Boutique</h4>
-                                            <p class="text-xs text-outline">Regalos y souvenirs</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Envoltura premium gratis</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/05.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
-
-                        <!-- Salud y Bienestar Content -->
-                        <div id="cat-salud" class="aliado-pane hidden">
-                            <div class="flex justify-between items-center mb-10">
-                                <h3 class="font-headline text-xl font-bold text-primary">Salud y Bienestar </h3>
-
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">local_pharmacy</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Farmacia Salud</h4>
-                                            <p class="text-xs text-outline">Medicamentos y derma</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">10% desc. en marcas propias</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">fitness_center</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Fit Gym & Classes</h4>
-                                            <p class="text-xs text-outline">Cadenas de gimnasios</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Inscripción anual gratis</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">visibility</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Visión Plus Ópticas</h4>
-                                            <p class="text-xs text-outline">Salud visual</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">20% desc. en lentes de marca</p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                                    <div class="flex gap-4 items-center mb-4">
-                                        <div
-                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center text-primary">
-                                            <span class="material-symbols-outlined text-3xl">spa</span>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-primary">Relax Spa Center</h4>
-                                            <p class="text-xs text-outline">Masajes y faciales</p>
-                                        </div>
-                                    </div>
-                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
-                                        <p class="text-sm font-bold text-primary">Masaje capilar en servicios</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/06.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/07.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/08.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/09.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/10.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/11.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/12.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
+                        </div>
+                        <div class="brand-box border-r border-gray-50"><img src="assets/marcas/13.avif" alt="Brand"
+                                class="max-h-full max-w-[80%] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all">
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const navButtons = document.querySelectorAll('.aliado-btn');
-                const panes = document.querySelectorAll('.aliado-pane');
-
-                navButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const target = btn.dataset.category;
-
-                        // Update buttons
-                        navButtons.forEach(b => {
-                            b.classList.remove('bg-primary', 'text-white', 'shadow-lg');
-                            b.classList.add('bg-white', 'text-primary', 'hover:bg-primary/5');
-                            const arrow = b.querySelector('span[class*="chevron_right"]');
-                            if (arrow) arrow.classList.add('opacity-0');
-                        });
-                        btn.classList.add('bg-primary', 'text-white', 'shadow-lg');
-                        btn.classList.remove('bg-white', 'text-primary', 'hover:bg-primary/5');
-                        const activeArrow = btn.querySelector('span[class*="chevron_right"]');
-                        if (activeArrow) activeArrow.classList.remove('opacity-0');
-
-                        // Update panes
-                        panes.forEach(p => p.classList.add('hidden'));
-                        const activePane = document.getElementById(`cat-${target}`);
-                        if (activePane) activePane.classList.remove('hidden');
-                    });
-                });
-            });
-        </script>
         </div>
-        </div>
-        </section>
+
         <!-- Tu cuenta digital (Expanded Mobile Showcase) -->
         <section id="cuenta-digital" class="py-24 bg-white relative overflow-hidden">
             <div class="container mx-auto px-8">
@@ -1017,7 +710,7 @@
                                     </div>
                                     <div class="text-center">
                                         <p class="font-bold text-primary text-sm">JUAN PÉREZ</p>
-                                        <p class="text-[10px] text-outline">SOCIO GOLD #884321</p>
+                                        <p class="text-[10px] text-outline">SOCIO ORO #884321</p>
                                     </div>
                                 </div>
                             </div>
@@ -1040,7 +733,7 @@
                                 <div class="bg-background h-full rounded-[2rem] overflow-hidden">
                                     <div class="p-5 bg-primary text-white pt-8">
                                         <div class="flex justify-between items-center mb-4">
-                                            <img src="assets/ADO-GO.svg" class="h-4 brightness-0 invert" alt="ADO Go" />
+                                            <img src="assets/ADO-GO.svg" class="h-4 brightness-0 invert" alt="ADO GO" />
                                             <span class="material-symbols-outlined text-sm">menu</span>
                                         </div>
                                         <div
@@ -1122,64 +815,867 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- App Store Badges -->
+                        <div class="mt-12 flex flex-wrap gap-4">
+                            <a href="#"
+                                class="flex items-center gap-3 bg-black text-white px-5 py-2.5 rounded-xl transition-transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl border border-white/10 group">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                                    class="h-8 w-8 filter invert transition-all group-hover:scale-110" alt="Apple icon">
+                                <div class="flex flex-col text-left justify-center pb-0.5">
+                                    <span
+                                        class="text-[9px] leading-[1] font-medium tracking-wide opacity-80 mb-0.5">Descárgalo
+                                        en el</span>
+                                    <span class="text-lg font-bold leading-none -mt-0.5 tracking-tight">App Store</span>
+                                </div>
+                            </a>
+                            <a href="#"
+                                class="flex items-center gap-3 bg-black text-white px-5 py-2.5 rounded-xl transition-transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl border border-white/10 group">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg"
+                                    class="h-7 w-7 transition-all group-hover:scale-110" alt="Google Play icon">
+                                <div class="flex flex-col text-left justify-center pb-0.5">
+                                    <span
+                                        class="text-[9px] leading-[1] font-medium tracking-wide opacity-80 mb-0.5">DISPONIBLE
+                                        EN</span>
+                                    <span class="text-lg font-bold leading-none -mt-0.5 tracking-tight">Google
+                                        Play</span>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- FAQ Section -->
-        <section class="py-24 bg-surface-container-low">
-            <div class="container mx-auto px-8 max-w-4xl">
-                <div class="text-center mb-16">
-                    <h2 class="font-headline text-4xl font-extrabold text-primary">Preguntas Frecuentes</h2>
-                    <p class="text-on-surface-variant mt-4">Todo lo que necesitas saber sobre el programa de lealtad ADO
-                        Go.</p>
+        <!-- Red de Aliados (Interactive Redesign) -->
+        <section id="aliados" class="py-24 bg-surface-container-highest">
+            <div class="container mx-auto px-8">
+                <div id="aliados-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <!-- Left: Categories -->
+                    <div class="lg:col-span-4">
+                        <span
+                            class="text-secondary font-extrabold uppercase tracking-widest text-xs block mb-4">Ecosistema
+                            de Beneficios</span>
+                        <h2 class="font-headline text-4xl font-extrabold text-primary mb-8 leading-tight">Nuestra Red de
+                            Aliados</h2>
+                        <div class="space-y-2" id="aliados-nav">
+                            <button data-category="movilidad"
+                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-primary text-white font-bold transition-all shadow-lg active-category">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">local_taxi</span>
+                                    <span>Taxis y Movilidad</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
+                            </button>
+                            <button data-category="restaurantes"
+                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">restaurant</span>
+                                    <span>Restaurantes</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
+                            </button>
+                            <button data-category="entretenimiento"
+                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                    <span>Entretenimiento</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
+                            </button>
+                            <button data-category="compras"
+                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">shopping_bag</span>
+                                    <span>Compras</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined transition-opacity duration-300">chevron_right</span>
+                            </button>
+                            <button data-category="salud"
+                                class="aliado-btn w-full flex items-center justify-between p-4 rounded-xl bg-white text-primary font-bold hover:bg-primary/5 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined">medical_services</span>
+                                    <span>Salud y Bienestar</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined transition-opacity duration-300 ">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Right: Partner Showcase -->
+                    <div class="lg:col-span-8 bg-white/50 p-8 rounded-3xl border border-white/50 backdrop-blur-sm min-h-[500px]"
+                        id="aliados-list">
+                        <!-- Taxis Content -->
+                        <div id="cat-movilidad" class="aliado-pane">
+                            <div class="flex justify-between items-center mb-10">
+                                <h3 class="font-headline text-xl font-bold text-primary">Taxis y Movilidad</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/taxisymovilidad/uber.svg"
+                                                class="w-12 h-12 object-contain" alt="Uber">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Uber</h4>
+                                            <p class="text-xs text-outline">Viajes compartidos</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/taxisymovilidad/didi-logo.svg"
+                                                class="w-12 h-12 object-contain" alt="DiDi">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">DiDi</h4>
+                                            <p class="text-xs text-outline">Movilidad confiable</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/taxisymovilidad/inDrive.svg"
+                                                class="w-12 h-12 object-contain" alt="inDrive">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">inDrive</h4>
+                                            <p class="text-xs text-outline">Taxis con precio acordado</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">3 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/taxisymovilidad/EliteTaxiCDMX.jpg"
+                                                class="w-full h-full object-cover" alt="Elite Taxi">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Elite Taxi</h4>
+                                            <p class="text-xs text-outline">Servicio ejecutivo en CDMX</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cat-restaurantes" class="aliado-pane hidden">
+                            <div class="flex justify-between items-center mb-10">
+                                <h3 class="font-headline text-xl font-bold text-primary">Restaurantes</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/restaurantes/vips.svg"
+                                                class="w-12 h-12 object-contain" alt="VIPS">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Vips</h4>
+                                            <p class="text-xs text-outline">Restaurante familiar</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/restaurantes/mcdonalds.svg"
+                                                class="w-12 h-12 object-contain" alt="McDonald's">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">McDonald's</h4>
+                                            <p class="text-xs text-outline">Comida rápida</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/restaurantes/starbucks.png"
+                                                class="w-12 h-12 object-contain" alt="Starbucks">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Starbucks</h4>
+                                            <p class="text-xs text-outline">Café premium</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">3 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/restaurantes/Krispy_Kreme_Doughnuts.svg"
+                                                class="w-12 h-12 object-contain" alt="Krispy Kreme">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Krispy Kreme</h4>
+                                            <p class="text-xs text-outline">Donas y café</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Entretenimiento Content -->
+                        <div id="cat-entretenimiento" class="aliado-pane hidden">
+                            <div class="flex justify-between items-center mb-10">
+                                <h3 class="font-headline text-xl font-bold text-primary">Entretenimiento</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/entretenimiento/Cinemex.svg"
+                                                class="w-12 h-12 object-contain" alt="Cinemex">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Cinemex</h4>
+                                            <p class="text-xs text-outline">Cine de calidad</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/entretenimiento/MejorTeatro.svg"
+                                                class="w-12 h-12 object-contain" alt="Mejor Teatro">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Mejor Teatro</h4>
+                                            <p class="text-xs text-outline">Obras y musicales</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">4 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/entretenimiento/Turibus.png"
+                                                class="w-full h-full object-cover" alt="Turibus">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Turibus</h4>
+                                            <p class="text-xs text-outline">Recorridos turísticos</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/entretenimiento/aztlan-feria.jpg"
+                                                class="w-full h-full object-cover" alt="Feria Aztlán">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Feria Aztlán</h4>
+                                            <p class="text-xs text-outline">Parque de diversiones</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">3 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compras Content -->
+                        <div id="cat-compras" class="aliado-pane hidden">
+                            <div class="flex justify-between items-center mb-10">
+                                <h3 class="font-headline text-xl font-bold text-primary">Compras</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/compras/suburbia.svg"
+                                                class="w-12 h-12 object-contain" alt="Suburbia">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Suburbia</h4>
+                                            <p class="text-xs text-outline">Tienda departamental</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/compras/steren.svg"
+                                                class="w-12 h-12 object-contain" alt="Steren">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Steren</h4>
+                                            <p class="text-xs text-outline">Electrónica y tecnología</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">5 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/compras/gandhi.svg"
+                                                class="w-12 h-12 object-contain" alt="Gandhi">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Librerías Gandhi</h4>
+                                            <p class="text-xs text-outline">Libros y cultura</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/compras/miniso.svg"
+                                                class="w-12 h-12 object-contain" alt="Miniso">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Miniso</h4>
+                                            <p class="text-xs text-outline">Diseño japonés</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">1 Punto ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cat-salud" class="aliado-pane hidden">
+                            <div class="flex justify-between items-center mb-10">
+                                <h3 class="font-headline text-xl font-bold text-primary">Salud y Bienestar</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/saludybienestar/framaciasguadalajara.svg"
+                                                class="w-12 h-12 object-contain" alt="Farmacias Guadalajara">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Farmacias Guadalajara</h4>
+                                            <p class="text-xs text-outline">Salud y cuidado personal</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">2 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/saludybienestar/SaludDigna.svg"
+                                                class="w-12 h-12 object-contain" alt="Salud Digna">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Salud Digna</h4>
+                                            <p class="text-xs text-outline">Prevención y diagnóstico</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">3 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-sm border border-primary/5 hover:border-primary/20 transition-all hover:-translate-y-1">
+                                    <div class="flex gap-4 items-center mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+                                            <img src="assets/aliados/saludybienestar/Mas_Vision.svg"
+                                                class="w-12 h-12 object-contain" alt="Más Visión">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-primary">Más Visión</h4>
+                                            <p class="text-xs text-outline">Salud visual</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-primary/5 p-3 rounded-lg border-l-4 border-secondary">
+                                        <p class="text-sm font-bold text-primary">4 Puntos ADO GO por cada $10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-4">
-                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm" open="">
-                        <summary
-                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
-                            ¿Cómo me registro en el programa?
+                <div id="view-map-btn-wrapper" class="mt-8">
+                    <button id="view-map-btn"
+                        class="w-full group bg-secondary text-white p-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:translate-y-[-4px] shadow-xl shadow-secondary/20 transition-all active:scale-95">
+                        <span class="material-symbols-outlined">map</span>
+                        Ver mapa de aliados
+                        <span
+                            class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+                <!-- Map View (Initially Hidden) -->
+                <div id="map-view" class="hidden animate-in fade-in duration-700">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+                        <div>
                             <span
-                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
-                        </summary>
-                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
-                            Puedes registrarte a través de nuestro sitio web, la app móvil oficial de ADO o directamente
-                            en las taquillas de cualquier terminal proporcionando tu nombre y correo electrónico.
+                                class="text-secondary font-extrabold uppercase tracking-widest text-xs block mb-4">Presencia
+                                Nacional</span>
+                            <h2 class="font-headline text-4xl font-extrabold text-primary leading-tight">Aliados en todo
+                                México</h2>
                         </div>
-                    </details>
-                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm">
-                        <summary
-                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
-                            ¿Los puntos tienen fecha de vencimiento?
+                        <button id="back-to-list"
+                            class="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-secondary transition-colors group">
                             <span
-                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
-                        </summary>
-                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
-                            Los puntos tienen una vigencia de 12 meses a partir de la fecha en que se acumularon. Te
-                            notificaremos 30 días antes de que cualquier bloque de puntos esté por vencer.
+                                class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                            Volver a la lista
+                        </button>
+                    </div>
+
+                    <div class="relative bg-white p-3 rounded-[3rem] shadow-2xl border border-primary/5">
+                        <div id="map" class="h-[600px] w-full rounded-[2.5rem] overflow-hidden z-10"></div>
+                        <!-- Map Overlay Info -->
+                        <div
+                            class="absolute bottom-10 left-10 z-20 bg-primary/90 backdrop-blur-md text-white p-6 rounded-2xl max-w-xs border border-white/10 shadow-2xl">
+                            <h4 class="font-bold text-lg mb-2">Más de 500 puntos</h4>
+                            <p class="text-xs text-white/70 leading-relaxed">En ADO GO estamos presentes en las
+                                principales ciudades conectadas por nuestra red de transporte.</p>
                         </div>
-                    </details>
-                    <details class="group bg-white rounded-2xl overflow-hidden shadow-sm">
-                        <summary
-                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
-                            ¿Puedo transferir mis puntos a otra cuenta?
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Visual Connector -->
+        <div class="relative flex justify-center z-20 -my-8">
+            <div
+                class="w-16 h-16 bg-white dark:bg-black rounded-full shadow-2xl flex items-center justify-center border-4 border-surface-container-low animate-bounce">
+                <span class="material-symbols-outlined text-secondary text-3xl font-black">arrow_downward</span>
+            </div>
+        </div>
+
+        <!-- Allied Companies Call to Action -->
+        <section class="py-24 bg-primary dark:bg-black overflow-hidden relative">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-[100px] -mr-48 -mt-48"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-[80px] -ml-48 -mb-48"></div>
+
+            <div class="container mx-auto px-8 relative z-10">
+                <div
+                    class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-[3rem] p-10 md:p-20 shadow-2xl relative overflow-hidden">
+                    <!-- Subtle pattern overlay -->
+                    <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+                        style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;">
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                        <div>
                             <span
-                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
-                        </summary>
-                        <div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
-                            Por el momento, los puntos son personales e intransferibles. Sin embargo, puedes usar tus
-                            puntos para comprar boletos a nombre de terceras personas.
+                                class="text-white font-bold tracking-[0.3em] uppercase text-xs block mb-6 px-3 py-1 bg-white/10 rounded-full w-fit">Oportunidades
+                                para Empresas</span>
+                            <h2 class="font-headline text-4xl md:text-6xl font-extrabold text-white leading-[1.1] mb-8">
+                                Convierte a tu empresa en un aliado ADO GO
+                            </h2>
+                            <h3
+                                class="font-headline text-2xl md:text-3xl font-black text-secondary leading-tight mb-10 max-w-lg uppercase tracking-tight">
+                                Tú das los puntos que mejor le funcionen a tu negocio
+                            </h3>
+                            <div class="flex flex-wrap gap-6">
+                                <button id="open-b2b"
+                                    class="bg-secondary text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-secondary/90 transition-all shadow-xl shadow-secondary/20 active:scale-95">
+                                    Quiero ser aliado
+                                </button>
+                            </div>
                         </div>
-                    </details>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Points Packages -->
+                            <div
+                                class="group bg-gradient-to-br from-white/10 to-transparent p-8 rounded-[2rem] border border-white/10 hover:border-secondary/40 transition-all duration-500">
+                                <div
+                                    class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white mb-6 group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                                    <span class="material-symbols-outlined">payments</span>
+                                </div>
+                                <h4 class="text-white font-bold text-xl mb-2 tracking-tight">Compra 1,000 pts</h4>
+                                <p class="text-white/40 text-xs leading-relaxed font-medium">Refuerza tu negocio local
+                                    hoy mismo.</p>
+                            </div>
+
+                            <div
+                                class="group bg-gradient-to-br from-white/10 to-transparent p-8 rounded-[2rem] border border-white/10 hover:border-secondary/40 transition-all duration-500">
+                                <div
+                                    class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white mb-6 group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                                    <span class="material-symbols-outlined">rocket_launch</span>
+                                </div>
+                                <h4 class="text-white font-bold text-xl mb-2 tracking-tight">Compra 5,000 pts</h4>
+                                <p class="text-white/40 text-xs leading-relaxed font-medium">Escala tu impacto en la red
+                                    ADO GO.</p>
+                            </div>
+
+                            <div
+                                class="group bg-gradient-to-br from-white/10 to-transparent p-8 rounded-[2rem] border border-white/10 hover:border-secondary/40 transition-all duration-500">
+                                <div
+                                    class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white mb-6 group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                                    <span class="material-symbols-outlined">workspace_premium</span>
+                                </div>
+                                <h4 class="text-white font-bold text-xl mb-2 tracking-tight">Compra 10,000 pts</h4>
+                                <p class="text-white/40 text-xs leading-relaxed font-medium">Beneficios corporativos de
+                                    alto nivel.</p>
+                            </div>
+
+                            <div
+                                class="bg-gradient-to-br from-secondary to-red-800 p-8 rounded-[2rem] shadow-2xl flex flex-col justify-center border border-white/20 group hover:scale-[1.02] transition-transform duration-500">
+                                <span
+                                    class="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Empresas
+                                    ADO GO</span>
+                                <p class="text-white font-black text-lg sm:text-lg lg:text-xl leading-tight">
+                                    INCREMENTA LA LEALTAD de tus clientes con Puntos ADO GO
+                                </p>
+                                <div class="mt-6 flex items-center gap-3">
+                                    <div class="h-[2px] w-12 bg-white/30"></div>
+                                    <span class="material-symbols-outlined text-white/50">handshake</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const navButtons = document.querySelectorAll('.aliado-btn');
+                const panes = document.querySelectorAll('.aliado-pane');
+
+                navButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const target = btn.dataset.category;
+
+                        // Update buttons
+                        navButtons.forEach(b => {
+                            b.classList.remove('bg-primary', 'text-white', 'shadow-lg');
+                            b.classList.add('bg-white', 'text-primary', 'hover:bg-primary/5');
+                            const arrow = b.querySelector('span[class*="chevron_right"]');
+                            if (arrow) arrow.classList.add('opacity-0');
+                        });
+                        btn.classList.add('bg-primary', 'text-white', 'shadow-lg');
+                        btn.classList.remove('bg-white', 'text-primary', 'hover:bg-primary/5');
+                        const activeArrow = btn.querySelector('span[class*="chevron_right"]');
+                        if (activeArrow) activeArrow.classList.remove('opacity-0');
+
+                        // Update panes
+                        panes.forEach(p => p.classList.add('hidden'));
+                        const activePane = document.getElementById(`cat-${target}`);
+                        if (activePane) activePane.classList.remove('hidden');
+                    });
+                });
+            });
+        </script>
+        </div>
+        </div>
+        </section>
+        <!-- Tu cuenta digital (Expanded Mobile Showcase) -->
+
+
+        <!-- BBVA ADO GO Section -->
+        <section class="py-32 bg-white relative overflow-hidden">
+            <!-- Decorative background -->
+            <div
+                class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -mr-64 -mt-64">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px] -ml-40 -mb-40">
+            </div>
+
+            <div class="container mx-auto px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+
+                    <!-- Left: Credit Card Render -->
+                    <div
+                        class="lg:col-span-5 relative flex justify-center perspective-[1500px] py-10 md:py-20 lg:py-10">
+                        <!-- Floating points simulation -->
+                        <div class="absolute top-10 left-10 md:left-20 w-10 h-10 bg-secondary rounded-full blur-sm opacity-50 animate-bounce"
+                            style="animation-delay: 0.1s; animation-duration: 4s;"></div>
+                        <div class="absolute bottom-10 md:bottom-20 right-10 md:right-20 w-14 h-14 bg-primary rounded-full blur-sm opacity-40 animate-pulse"
+                            style="animation-duration: 5s;"></div>
+                        <div class="absolute top-1/2 left-0 md:left-10 w-8 h-8 bg-[#004481] rounded-full blur-[2px] opacity-60 animate-bounce"
+                            style="animation-delay: 1.2s; animation-duration: 3s;"></div>
+                        <div class="absolute bottom-0 left-1/4 w-6 h-6 bg-secondary/80 rounded-full opacity-70 animate-pulse"
+                            style="animation-delay: 0.5s; animation-duration: 2.5s;"></div>
+
+                        <!-- Glow Behind Card -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/20 rounded-full blur-[80px] w-64 h-[400px] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                        </div>
+
+                        <!-- 3D Card Wrapper -->
+                        <div class="relative w-[280px] h-[450px] transition-transform duration-1000 transform-style-3d hover:scale-[1.03]"
+                            style="animation: float-3d 8s ease-in-out infinite;">
+
+                            <!-- Card Face -->
+                            <div class="absolute inset-0 rounded-[2rem] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex flex-col justify-between p-8 backface-hidden"
+                                style="background: linear-gradient(145deg, #4A148C 0%, #311B92 50%, #1A237E 100%); border: 1px solid rgba(255,255,255,0.15);">
+
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-white font-black tracking-widest text-2xl drop-shadow-md">BBVA</h3>
+                                    <span class="material-symbols-outlined text-white/90 text-3xl">contactless</span>
+                                </div>
+
+                                <div
+                                    class="absolute left-8 top-32 w-14 h-12 rounded-lg bg-gradient-to-br from-yellow-200 via-yellow-400 to-yellow-600 opacity-90 overflow-hidden border border-yellow-200/50 shadow-sm">
+                                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-black/20"></div>
+                                    <div class="absolute top-0 left-1/2 w-[1px] h-full bg-black/20"></div>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <p
+                                        class="text-white font-mono tracking-widest text-lg md:text-xl mb-4 font-semibold drop-shadow-md">
+                                        •••• •••• •••• 4092</p>
+                                    <div class="flex justify-between items-end">
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="text-white/60 text-[8px] uppercase tracking-tighter mb-0.5">Titular</span>
+                                            <span
+                                                class="text-white font-bold tracking-widest uppercase text-[10px]">VIAJERO
+                                                FRECUENTE</span>
+                                        </div>
+                                        <img src="assets/brands/ADO-GO-white.svg" class="h-8 drop-shadow-sm"
+                                            onerror="this.src='assets/ADO-GO.svg'; this.classList.add('brightness-0', 'invert')"
+                                            alt="ADO GO">
+                                    </div>
+                                </div>
+
+                                <!-- Shine overlay for realist glass effect -->
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 pointer-events-none mix-blend-overlay">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content -->
+                    <div class="lg:col-span-7">
+                        <span class="text-primary font-extrabold tracking-[0.2em] uppercase text-xs block mb-4">Tarjeta
+                            de Crédito Exclusiva</span>
+                        <h2
+                            class="font-headline text-3xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-[1.1] mb-6 tracking-tight">
+                            <br><span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Tarjeta
+                                de crédito<br> BBVA ADO GO</span>
+                        </h2>
+                        <p class="text-on-surface-variant text-lg leading-relaxed mb-12 max-w-2xl font-medium">
+                            Convierte tus compras diarias en nuevas rutas, beneficios exclusivos y una experiencia más
+                            cómoda cada vez que viajas. Con BBVA ADO GO, tu lealtad se transforma en ventajas reales
+                            dentro y fuera del camino.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
+                            <div class="flex gap-5 group">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">add_circle</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary text-lg mb-2 leading-tight tracking-tight">Suma
+                                        más con cada pago</h4>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Acumula puntos ADO GO en
+                                        tus compras y úsalos para obtener recompensas, viajes y beneficios dentro del
+                                        programa.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-5 group">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#004481]/5 flex items-center justify-center text-[#004481] group-hover:bg-[#004481] group-hover:text-white transition-colors duration-300 shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">airline_seat_recline_extra</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary text-lg mb-2 leading-tight tracking-tight">Viaja
+                                        con beneficios preferentes</h4>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Disfruta atención
+                                        especial en momentos clave de tu experiencia de viaje y haz tus traslados más
+                                        ágiles y cómodos.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-5 group">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 rounded-2xl bg-secondary/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition-colors duration-300 shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">local_activity</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#004481] text-lg mb-2 leading-tight tracking-tight">
+                                        Activa ventajas en el camino</h4>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Accede a promociones,
+                                        beneficios y experiencias pensadas para quienes se mueven con frecuencia.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-5 group">
+                                <div
+                                    class="flex-shrink-0 w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-sm">
+                                    <span class="material-symbols-outlined text-3xl">redeem</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#004481] text-lg mb-2 leading-tight tracking-tight">
+                                        Empieza con un beneficio de bienvenida</h4>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Solicita y activa tu
+                                        tarjeta para desbloquear una recompensa especial de inicio dentro de ADO GO.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-14">
+                            <button
+                                class="bg-[#004481] text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-[#003366] transition-all shadow-xl shadow-[#004481]/20 active:scale-95 flex items-center justify-center sm:justify-start gap-4">
+                                <span class="material-symbols-outlined text-lg">credit_card</span>
+                                Solicitar Tarjeta
+                                <span
+                                    class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Media Section -->
+        <section class="py-24 bg-surface-container-highest relative overflow-hidden">
+            <!-- Background Decorative Blur -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[100px] -z-0">
+            </div>
+
+            <div class="container mx-auto px-8 relative z-10 text-center">
+                <span class="text-secondary font-extrabold uppercase tracking-widest text-xs block mb-4">Comunidad ADO
+                    GO</span>
+                <h2 class="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-6 leading-tight">Síguenos y
+                    descubre más</h2>
+                <p class="text-on-surface-variant max-w-2xl mx-auto mb-16 text-lg leading-relaxed">
+                    Mantente al tanto de promociones únicas, nuevos aliados y novedades exclusivas en nuestras redes
+                    sociales. ¡Únete a la conversación!
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-8">
+                    <!-- Instagram Button -->
+                    <a href="https://instagram.com" target="_blank"
+                        class="group flex items-center gap-6 bg-white p-6 rounded-3xl shadow-xl shadow-primary/5 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 transition-all w-full sm:w-auto border border-primary/5">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                alt="Instagram">
+                        </div>
+                        <div class="text-left pr-8">
+                            <span
+                                class="block text-xs font-bold text-outline/60 uppercase tracking-widest mb-1">Síguenos
+                                en</span>
+                            <span class="block font-headline font-black text-primary text-2xl">Instagram</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined text-outline/30 group-hover:text-secondary group-hover:translate-x-2 transition-all">arrow_forward</span>
+                    </a>
+
+                    <!-- Facebook Button -->
+                    <a href="https://facebook.com" target="_blank"
+                        class="group flex items-center gap-6 bg-white p-6 rounded-3xl shadow-xl shadow-primary/5 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 transition-all w-full sm:w-auto border border-primary/5">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                alt="Facebook">
+                        </div>
+                        <div class="text-left pr-8">
+                            <span
+                                class="block text-xs font-bold text-outline/60 uppercase tracking-widest mb-1">Visítanos
+                                en</span>
+                            <span class="block font-headline font-black text-primary text-2xl">Facebook</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined text-outline/30 group-hover:text-secondary group-hover:translate-x-2 transition-all">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
     </main>
     <!-- Footer -->
     <footer class="bg-primary dark:bg-black w-full text-white">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 px-12 py-20">
             <div class="flex flex-col gap-8">
-                <img src="assets/ADO-GO.svg" class="h-10 brightness-0 invert" alt="ADO Go" />
+                <img src="assets/ADO-GO.svg" class="h-10 brightness-0 invert" alt="ADO GO" />
                 <p class="font-inter text-sm leading-relaxed text-white/60 max-w-sm">
                     Elevando el estándar del viaje por carretera en México a través de la excelencia en el servicio y la
                     recompensa a la lealtad de nuestros viajeros.
@@ -1205,7 +1701,8 @@
                 </div>
                 <div class="flex flex-col gap-4">
                     <h5 class="text-xs font-black uppercase tracking-[0.2em] text-secondary">Soporte</h5>
-                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Preguntas
+                    <a class="font-inter text-sm text-white/60 hover:text-white transition-colors cursor-pointer"
+                        id="open-faq">Preguntas
                         Frecuentes</a>
                     <a class="font-inter text-sm text-white/60 hover:text-white transition-colors" href="#">Contacto</a>
                     <a class="font-inter text-sm text-white/60 hover:text-white transition-colors"
@@ -1214,8 +1711,8 @@
             </div>
         </div>
         <div class="px-12 py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p class="font-inter text-[10px] leading-relaxed text-white/40 uppercase tracking-widest">© 2024 ADO Go. El
-                Viajero Editorial. Todos los derechos reservados.</p>
+            <p class="font-inter text-[10px] leading-relaxed text-white/40 uppercase tracking-widest">© 2024 ADO GO.
+                Todos los derechos reservados.</p>
             <div class="flex items-center gap-6 opacity-30 grayscale hover:opacity-60 transition-opacity">
 
             </div>
@@ -1265,7 +1762,7 @@
                         <span class="material-symbols-outlined text-4xl text-primary"
                             style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
                     </div>
-                    <h3 class="font-headline text-3xl font-black text-primary tracking-tight">Únete a ADO Go</h3>
+                    <h3 class="font-headline text-3xl font-black text-primary tracking-tight">Únete a ADO GO</h3>
                     <p class="text-xs text-on-surface-variant mt-2 max-w-[250px] mx-auto font-bold opacity-70">El
                         ecosistema de lealtad que recompensa cada kilómetro.</p>
                 </div>
@@ -1299,73 +1796,219 @@
         </div>
     </div>
 
+    <!-- FAQ Popup -->
+    <div id="faq-popup" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-hidden">
+        <div id="faq-backdrop"
+            class="absolute inset-0 bg-black/40 backdrop-blur-xl opacity-0 transition-opacity duration-700 ease-in-out cursor-pointer">
+        </div>
+        <div id="faq-card"
+            class="relative z-20 w-full max-w-2xl mx-4 transform scale-90 translate-y-8 opacity-0 transition-all duration-[600ms] ease-out">
+            <div
+                class="bg-white/95 dark:bg-primary/95 backdrop-blur-2xl rounded-[2.5rem] p-10 shadow-[0_30px_60px_-15px_rgba(95,33,103,0.5)] border border-white/50 relative overflow-hidden max-h-[90vh] flex flex-col">
+                <button id="close-faq"
+                    class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-surface-container-low/80 hover:bg-primary hover:text-white rounded-full text-primary transition-all active:scale-95 z-30">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+                <div class="mb-8 pr-12">
+                    <h3 class="font-headline text-3xl font-black text-primary tracking-tight">Preguntas Frecuentes</h3>
+                    <p class="text-xs text-on-surface-variant mt-2 font-bold opacity-70">Todo lo que necesitas saber
+                        sobre el programa de lealtad ADO GO.</p>
+                </div>
+                <div class="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                    <details class="group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm" open>
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Cómo me registro en el programa?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-sm text-on-surface-variant leading-relaxed">
+                            Puedes registrarte a través de nuestro sitio web, la app móvil oficial de ADO o mediante el
+                            correo electrónico contacto@adogo.com con tu nombre y correo electrónico.
+                        </div>
+                    </details>
+                    <details class="group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm">
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Los puntos tienen fecha de vencimiento?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-sm text-on-surface-variant leading-relaxed">
+                            Los puntos tienen una vigencia de 12 meses a partir de la fecha en que se acumularon. Te
+                            notificaremos 30 días antes de que cualquier bloque de puntos esté por vencer.
+                        </div>
+                    </details>
+                    <details class="group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm">
+                        <summary
+                            class="flex justify-between items-center p-6 cursor-pointer list-none font-bold text-primary">
+                            ¿Puedo transferir mis puntos a otra cuenta?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-sm text-on-surface-variant leading-relaxed">
+                            Por el momento, los puntos son personales e intransferibles. Sin embargo, puedes usar tus
+                            puntos para comprar boletos a nombre de terceras personas.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- B2B Partner Popup -->
+    <div id="b2b-popup" class="fixed inset-0 z-[110] hidden items-center justify-center p-4">
+        <div id="b2b-backdrop"
+            class="absolute inset-0 bg-primary/40 backdrop-blur-md opacity-0 transition-opacity duration-700"></div>
+        <div id="b2b-card"
+            class="relative bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden opacity-0 scale-90 translate-y-8 transition-all duration-700 ease-out">
+            <div class="flex flex-col md:flex-row min-h-[500px]">
+                <!-- Left: Info Sidebar -->
+                <div
+                    class="hidden md:flex md:w-1/3 bg-primary p-8 flex-col justify-between text-white relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10"
+                        style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 16px 16px;">
+                    </div>
+                    <div class="relative z-10">
+                        <img src="assets/ADO-GO.svg" class="h-5 brightness-0 invert mb-8" alt="ADO GO" />
+                        <h3 class="text-xl font-black leading-tight mb-4 uppercase tracking-tighter">Aliados B2B</h3>
+                        <p class="text-white/60 text-xs leading-relaxed">Únete a la red de beneficios más grande de
+                            México y recompensa a tus clientes.</p>
+                    </div>
+                    <div class="relative z-10 text-[9px] font-bold opacity-40 uppercase tracking-widest leading-none">
+                        Enterprise Solutions</div>
+                </div>
+
+                <!-- Right: Form -->
+                <div class="flex-1 p-8 md:p-10 relative">
+                    <button id="close-b2b"
+                        class="absolute top-6 right-6 text-outline hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+
+                    <h2 class="font-headline text-2xl font-black text-primary mb-1">Solicitud de Alianza</h2>
+                    <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest opacity-60 mb-8">
+                        Información de la empresa</p>
+
+                    <form class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5 focus-within:translate-x-1 transition-transform">
+                                <label
+                                    class="text-[9px] font-black uppercase tracking-widest text-primary/40 ml-1">Empresa</label>
+                                <input type="text" placeholder="Nombre comercial"
+                                    class="w-full px-5 py-3 rounded-xl bg-surface-container-low border border-primary/5 focus:border-secondary focus:outline-none transition-all text-xs font-medium">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-[9px] font-black uppercase tracking-widest text-primary/40 ml-1">Giro</label>
+                                <div class="relative">
+                                    <select
+                                        class="w-full px-5 py-3 rounded-xl bg-surface-container-low border border-primary/5 focus:border-secondary focus:outline-none transition-all text-xs font-medium appearance-none">
+                                        <option>Restaurantes</option>
+                                        <option>Hoteles</option>
+                                        <option>Entretenimiento</option>
+                                        <option>Salud</option>
+                                        <option>Otro</option>
+                                    </select>
+                                    <span
+                                        class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-sm pointer-events-none opacity-40">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-primary/40 ml-1">Paquete
+                                Inicial de Puntos</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button"
+                                    class="py-3 px-1 rounded-xl border-2 border-secondary bg-secondary/5 text-secondary font-black text-[9px] uppercase tracking-tighter hover:bg-secondary hover:text-white transition-all shadow-sm">1,000
+                                    pts</button>
+                                <button type="button"
+                                    class="py-3 px-1 rounded-xl border-2 border-primary/10 text-primary/40 font-black text-[9px] uppercase tracking-tighter hover:border-secondary hover:text-secondary transition-all">5,000
+                                    pts</button>
+                                <button type="button"
+                                    class="py-3 px-1 rounded-xl border-2 border-primary/10 text-primary/40 font-black text-[9px] uppercase tracking-tighter hover:border-secondary hover:text-secondary transition-all">10,000
+                                    pts</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-primary/40 ml-1">Email
+                                Corporativo</label>
+                            <input type="email" placeholder="contacto@empresa.com"
+                                class="w-full px-5 py-3 rounded-xl bg-surface-container-low border border-primary/5 focus:border-secondary focus:outline-none transition-all text-xs font-medium">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-primary text-white py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-4 border-b-4 border-black/20">Enviar
+                            Solicitud</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const btnUnetes = document.querySelectorAll('.btn-unete');
-            const popup = document.getElementById('registro-popup');
-            const backdrop = document.getElementById('registro-backdrop');
-            const card = document.getElementById('registro-card');
+            const registroPopup = document.getElementById('registro-popup');
+            const registroBackdrop = document.getElementById('registro-backdrop');
+            const registroCard = document.getElementById('registro-card');
             const shape1 = document.getElementById('geo-shape-primary');
             const shape2 = document.getElementById('geo-shape-secondary');
-            const closeBtn = document.getElementById('close-registro');
+            const closeRegistroBtn = document.getElementById('close-registro');
 
-            function openPopup(e) {
-                if (e) e.preventDefault();
+            const openFaqBtn = document.getElementById('open-faq');
+            const faqPopup = document.getElementById('faq-popup');
+            const faqBackdrop = document.getElementById('faq-backdrop');
+            const faqCard = document.getElementById('faq-card');
+            const closeFaqBtn = document.getElementById('close-faq');
 
-                // Show container
+            function openPopup(popup, backdrop, card, hasShapes = false) {
                 popup.classList.remove('hidden');
                 popup.classList.add('flex');
                 document.body.style.overflow = 'hidden';
 
-                // Reset states
-                shape1.style.opacity = '1';
-                shape2.style.opacity = '1';
-                shape1.style.transform = 'scale(0)';
-                shape2.style.transform = 'scale(0)';
+                if (hasShapes) {
+                    shape1.style.opacity = '1';
+                    shape2.style.opacity = '1';
+                    shape1.style.transform = 'scale(0)';
+                    shape2.style.transform = 'scale(0)';
+                }
+
                 card.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
                 card.classList.add('opacity-0', 'scale-90', 'translate-y-8');
 
-                // Start sequence
                 requestAnimationFrame(() => {
-                    // 1. Backdrop fade in
                     backdrop.classList.remove('opacity-0');
                     backdrop.classList.add('opacity-100');
 
-                    // 2. Animate geometric shapes (Scale 250 is enough for a massive circle)
-                    requestAnimationFrame(() => {
-                        shape1.style.transform = 'scale(250)';
-                        shape2.style.transform = 'scale(250)';
-
-                        // 3. Reveal form and fade out shapes (creating a sweep effect)
+                    if (hasShapes) {
+                        requestAnimationFrame(() => {
+                            shape1.style.transform = 'scale(250)';
+                            shape2.style.transform = 'scale(250)';
+                            setTimeout(() => {
+                                shape1.style.opacity = '0';
+                                shape2.style.opacity = '0';
+                                card.classList.remove('opacity-0', 'scale-90', 'translate-y-8');
+                                card.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+                            }, 500);
+                        });
+                    } else {
                         setTimeout(() => {
-                            // Fade out the colored shapes tightly to reveal the form
-                            shape1.style.opacity = '0';
-                            shape2.style.opacity = '0';
-
-                            // Bring in the form card
                             card.classList.remove('opacity-0', 'scale-90', 'translate-y-8');
                             card.classList.add('opacity-100', 'scale-100', 'translate-y-0');
-                        }, 500);
-                    });
+                        }, 100);
+                    }
                 });
             }
 
-            function closePopup() {
-                // Instantly retreat form
+            function closePopup(popup, backdrop, card) {
                 card.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
                 card.classList.add('opacity-0', 'scale-90', 'translate-y-8');
-
-                // Fade out backdrop
                 backdrop.classList.remove('opacity-100');
                 backdrop.classList.add('opacity-0');
 
-                // Reset shapes instantly while hidden
-                setTimeout(() => {
-                    shape1.style.transform = 'scale(0)';
-                    shape2.style.transform = 'scale(0)';
-                }, 400);
-
-                // Hide container completely
                 setTimeout(() => {
                     popup.classList.remove('flex');
                     popup.classList.add('hidden');
@@ -1373,9 +2016,187 @@
                 }, 700);
             }
 
-            btnUnetes.forEach(btn => btn.addEventListener('click', openPopup));
-            if (closeBtn) closeBtn.addEventListener('click', closePopup);
-            if (backdrop) backdrop.addEventListener('click', closePopup);
+            btnUnetes.forEach(btn => btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openPopup(registroPopup, registroBackdrop, registroCard, true);
+            }));
+
+            if (closeRegistroBtn) closeRegistroBtn.addEventListener('click', () => closePopup(registroPopup, registroBackdrop, registroCard));
+            if (registroBackdrop) registroBackdrop.addEventListener('click', () => closePopup(registroPopup, registroBackdrop, registroCard));
+
+            if (openFaqBtn) openFaqBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openPopup(faqPopup, faqBackdrop, faqCard);
+            });
+
+            if (closeFaqBtn) closeFaqBtn.addEventListener('click', () => closePopup(faqPopup, faqBackdrop, faqCard));
+            if (faqBackdrop) faqBackdrop.addEventListener('click', () => closePopup(faqPopup, faqBackdrop, faqCard));
+
+            // B2B Popup Logic
+            const b2bPopup = document.getElementById('b2b-popup');
+            const b2bBackdrop = document.getElementById('b2b-backdrop');
+            const b2bCard = document.getElementById('b2b-card');
+            const openB2bBtn = document.getElementById('open-b2b');
+            const closeB2bBtn = document.getElementById('close-b2b');
+
+            if (openB2bBtn) openB2bBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openPopup(b2bPopup, b2bBackdrop, b2bCard);
+            });
+
+            if (closeB2bBtn) closeB2bBtn.addEventListener('click', () => closePopup(b2bPopup, b2bBackdrop, b2bCard));
+            if (b2bBackdrop) b2bBackdrop.addEventListener('click', () => closePopup(b2bPopup, b2bBackdrop, b2bCard));
+
+            // 3D Card Scroll Effect
+            const scrollCards = document.querySelectorAll('.scroll-3d-card');
+            function updateCardRotation() {
+                scrollCards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const viewHeight = window.innerHeight;
+                    const cardCenter = rect.top + rect.height / 2;
+
+                    // Progress from 0 (top of screen) to 1 (bottom of screen)
+                    let progress = cardCenter / viewHeight;
+                    // Clamp progress
+                    progress = Math.max(0, Math.min(1, progress));
+
+                    // Rotate based on progress (center of screen is 0 rotation)
+                    const rotateX = (progress - 0.5) * 40; // Range: -20 to 20
+                    const rotateY = (progress - 0.5) * -15; // Range: 7.5 to -7.5
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+            }
+
+            window.addEventListener('scroll', updateCardRotation);
+
+            // Map Logic
+            const viewMapBtn = document.getElementById('view-map-btn');
+            const backToListBtn = document.getElementById('back-to-list');
+            const mapListView = document.getElementById('aliados-grid');
+            const mapDetailView = document.getElementById('map-view');
+            let mapInitialized = false;
+            let mapInstance;
+            let markerLayer;
+
+            const mexicoBounds = [
+                [14.53, -118.40], // Southwest bounds
+                [32.72, -86.70]   // Northeast bounds
+            ];
+
+            // Over 100 Representative markers across Mexico for dense coverage
+            const locations = [
+                // Original Major Hubs
+                [19.4326, -99.1332], [20.6597, -103.3496], [25.6866, -100.3161], [21.0190, -101.2574], [19.0413, -98.2062],
+                [20.9674, -89.6243], [21.1619, -86.8515], [16.7326, -92.6416], [17.0732, -96.7266], [19.2433, -103.7250],
+                [20.6210, -87.0798], [18.9219, -99.2347], [19.2826, -99.6557], [21.8823, -102.2916], [20.5888, -100.3899],
+                [32.5149, -117.0382], [32.6245, -115.4523], [29.0729, -110.9559], [24.8053, -107.3940], [23.2494, -106.4111],
+                [24.0277, -104.6531], [22.7709, -102.5832], [22.1565, -100.9855], [22.2331, -97.8611], [19.1738, -96.1342],
+                [19.5438, -96.9102], [17.9869, -92.9303], [16.7569, -93.1292], [16.8531, -99.8237], [19.7060, -101.1950],
+                [20.1011, -98.7591], [19.3139, -98.2373], [25.4260, -100.9712], [25.5428, -103.4068], [28.6329, -106.0691],
+                [31.6904, -106.4245], [19.8301, -90.5349], [18.5215, -88.3038], [14.9080, -92.2618], [18.1560, -94.4440],
+                [20.5333, -97.4500], [25.8690, -97.5027], [27.4864, -99.5009], [26.0444, -98.2286], [31.8667, -116.5964],
+                [24.1426, -110.3127], [22.8905, -109.9167], [21.5040, -104.8947],
+
+                // New dense additions (North)
+                [31.30, -110.94], [27.91, -110.89], [27.07, -109.44], [26.93, -105.66], [28.40, -106.86],
+                [28.19, -105.47], [26.90, -101.42], [28.70, -100.52], [29.32, -100.95],
+
+                // Baja California Peninsula
+                [32.56, -116.62], [32.36, -117.03], [30.56, -115.93], [26.01, -111.34], [27.33, -112.26],
+
+                // Pacific Coast & Sinaloa
+                [25.79, -108.99], [25.57, -108.46], [21.44, -104.90], [21.03, -104.38], [20.65, -105.22],
+
+                // Northeast & Gulf
+                [23.73, -99.13], [22.74, -98.97], [22.39, -97.93], [24.85, -99.56], [25.18, -99.82],
+                [20.95, -97.40], [18.89, -96.93], [18.85, -97.09], [17.98, -94.55],
+
+                // Central & Bajio
+                [21.35, -101.93], [20.81, -102.76], [20.35, -102.77], [19.42, -102.05], [19.98, -102.28],
+                [17.95, -102.19], [19.43, -100.35], [20.38, -99.99], [20.52, -100.81], [20.67, -101.35],
+                [20.91, -100.74], [23.17, -102.86], [23.64, -100.64], [21.98, -99.01], [18.92, -98.43],
+                [19.05, -98.15],
+
+                // South & Southeast
+                [17.55, -99.50], [18.35, -99.53], [17.64, -101.55], [16.18, -95.20], [16.43, -95.01],
+                [15.76, -96.12], [16.25, -92.13], [17.50, -91.98], [16.70, -93.72], [17.99, -93.37],
+                [18.26, -93.22], [18.64, -91.83], [19.35, -90.72], [21.28, -89.66], [20.69, -88.20],
+                [20.42, -86.92], [20.21, -87.46]
+            ];
+
+            function initMap() {
+                if (mapInitialized) return;
+
+                mapInstance = L.map('map', {
+                    scrollWheelZoom: false,
+                    zoomControl: false,
+                    attributionControl: false,
+                    maxBounds: mexicoBounds,
+                    maxBoundsViscosity: 1.0,
+                    minZoom: 5
+                }).setView([23.6345, -102.5528], 5);
+
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19
+                }).addTo(mapInstance);
+
+                L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+                markerLayer = L.layerGroup().addTo(mapInstance);
+                mapInitialized = true;
+            }
+
+            function animateMarkers() {
+                markerLayer.clearLayers();
+
+                // Shuffle array visually for random pop-in effect
+                const shuffledLocations = [...locations].sort(() => Math.random() - 0.5);
+
+                // Distribute animations over 3000ms
+                const totalDuration = 3000;
+                const interval = totalDuration / locations.length;
+
+                shuffledLocations.forEach((pos, index) => {
+                    const delay = index * interval;
+                    const customMarker = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div class="custom-marker marker-pop-in" style="animation-delay: ${delay}ms;"></div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    L.marker(pos, { icon: customMarker }).addTo(markerLayer);
+                });
+            }
+
+            viewMapBtn.addEventListener('click', () => {
+                mapListView.classList.add('hidden');
+                mapDetailView.classList.remove('hidden');
+                document.getElementById('view-map-btn-wrapper').classList.add('hidden');
+                initMap();
+
+                setTimeout(() => {
+                    mapInstance.invalidateSize();
+                    animateMarkers(); // Animate markers specifically bounds entering
+                }, 100);
+
+                window.scrollTo({
+                    top: document.getElementById('aliados').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+
+            backToListBtn.addEventListener('click', () => {
+                mapDetailView.classList.add('hidden');
+                document.getElementById('view-map-btn-wrapper').classList.remove('hidden');
+                mapListView.classList.remove('hidden');
+                window.scrollTo({
+                    top: document.getElementById('aliados').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+            updateCardRotation(); // Initial position
         });
     </script>
 </body>
